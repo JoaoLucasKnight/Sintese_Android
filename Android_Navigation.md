@@ -26,7 +26,7 @@ O conceito básico de navegação e que temos uma pilha de tela e a media que va
       android:name="androidx.navigation.fragment.NavHostFragment"
       android:layout_width="match_parent"        
       android:layout_height="match_parent" />
-          
+      
       </FrameLayout>
       ```
     
@@ -46,7 +46,7 @@ O conceito básico de navegação e que temos uma pilha de tela e a media que va
          fragment<ProfileFragment>("profile") {        
               label = "Profile"
           }  
-        
+      
           fragment<FriendsListFragment>("friendsList") {
               label = "Friends List"
           }    
@@ -75,7 +75,7 @@ O conceito básico de navegação e que temos uma pilha de tela e a media que va
                android:layout_width="match_parent"
                android:layout_height="match_parent"
                app:navGraph="@navigation/nav_graph"/>
-           
+       
        </FrameLayout>
        ```
 
@@ -114,7 +114,7 @@ Por padão a o NavController é anexado em um layout Activity, ou seja se um usu
 <?xml version="1.0" encoding="utf-8"?>
 
 <div>
-  
+
 <navigation 
 xmlns:android="http://schemas.android.com/apk/res/android"    
 xmlns:app="http://schemas.android.com/apk/res-auto"    
@@ -125,6 +125,7 @@ app:startDestination="@id/simpleFragment">
     android:name="com.example.android.navigation.activity.DestinationActivity"**        
     android:label="@string/sampleActivityTitle" /> 
 </navigation> 
+
 </div>
 
 * **Graficos Aninhados**
@@ -144,3 +145,106 @@ app:startDestination="@id/simpleFragment">
   * **Processar Links Diretos**
 
 
+
+## Usar NavGraph
+
+    Após criado o `NavGraph` o `NavController` está disponível para uso. A unica função disponivel para navegar é a `<u>NavController.navigate()</u>`
+
+- Podendo receber uma route (Melhor maneira)
+
+- Podendo receber um ID
+  
+  ```kotlin
+  navController.navigate("friendslist")
+  
+  navController.navigate(R.id."id_da_view)
+  ```
+
+
+
+**Navegar Com Opções**
+
+    Quando utiliza a DSL gera uma class `NavAction` (Destino, 'Bundle', e 'NavOptions')
+
+**XML:** Dentro da tag action passa as informações
+
+</fragment>
+
+**Programatica:** dessa forma substitui todas configurações do xml
+
+```kotlin
+findNavController().navigate(R.id.action_fragmentOne_to_fragmentTwo,
+    null,navOptions { // Use the Kotlin DSL for building NavOptions
+        anim {
+            enter = android.R.animator.fade_in
+            exit = android.R.animator.fade_out
+        }
+    }
+)
+```
+
+**Transmitir dados com Bundle**
+
+- Cria um objeto bundle e passa ele pro destino com o `navigate()`
+
+        `val bundle = bundleOf("amount" to amount)`
+
+        `view.findNavController().navigate(R.id.confirmationAction, bundle)`
+
+- Recupera no destino com `getArguments()`
+
+```kotlin
+val tv = view.findViewById<TextView>(R.id.textViewAmount)
+
+tv.text = arguments?.getString("amount")
+```
+
+**Safe Args -** Permite a navegação segura de tipo entre destino
+
+    Caso você esteja utilizando o 'Gradle', e não esteja utilizando o 'Compose'
+
+[Safe Args (passo a passo)](https://developer.android.com/guide/navigation/use-graph/safe-args?hl=pt-br#enable)
+
+**Animações entre destinos**
+
+    *Completar*
+
+**Navegação condicional**
+
+    Usado quando existe uma bifurcação, ou seja quando dependendo de uma ação a tela a qual se segue a navegação será diferente
+
+    *Completar*
+
+## BackStack
+
+**Pilha de execução**
+
+- Destino
+
+- adiciona na pilha `NavController().navigate()`
+
+- Remove da pilha `NavController().navigateUp()` e `NavController().popBackStack()`     *a diferença que o navigateUp não sai do app, e o outro sim*
+
+- `popUpTo` ("id" ou "route")retorna a um destino de backStack e limpa
+
+- `Inclusive` ("Boolean") remove até o destino
+
+- `saveState` salvar o estado do destinos retirados da pilha
+
+
+
+**Dialogs :** Os *Dialogs* só podem existir no topo da lista de execução. Pode ter um *Dialog* em cima de outro. Mas no momento que o destino não ser um outro *dialogs* . Todos os *dialogs* são removidos da BackStack
+
+
+
+**Varias BackStacks**
+
+*Completar*
+
+## Integração
+
+Nesta parte e as formas que pode integrar o *navigation* com outros recurso
+
+- modulo de recurso : Baixar algo quando necessário, para maior compatibilidades com aparelhos com menos capacidade
+
+- Conectar com componentes da interface
